@@ -1,6 +1,6 @@
 streamlit==1.38.0
 google-cloud-aiplatform==1.63.0
-langchain==0.2.14
+langchain==0.2.15
 langchain-community==0.2.12
 validators==0.33.0
 unstructured==0.15.7
