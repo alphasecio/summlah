@@ -14,7 +14,7 @@ gcp_project_id = os.getenv("PROJECT_ID")
 gcp_location = os.getenv("LOCATION", "us-central1")  # Default to 'us-central1' if not set
 
 vertexai.init(project=gcp_project_id, location=gcp_location)
-model = GenerativeModel("gemini-1.5-flash-001")
+model = GenerativeModel("gemini-1.5-flash")
 
 if summarize:
     if not url.strip() or not validators.url(url):
@@ -28,12 +28,15 @@ if summarize:
                 else:
                     loader = UnstructuredURLLoader(urls=[url], ssl_verify=False, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"})
                 data = loader.load()
+                
                 for i in range(len(data)):
                     text += data[i].page_content
                     
-                prompt = "Write a summary of the following in 200-250 words: \n" + text + "\nSummary: "
-                
-                response = model.generate_content(prompt, stream=False)
-                st.success(response.text) 
+                if not text.strip():
+                    st.error("Failed to retrieve content from the URL provided.")
+                else:
+                    prompt = "Write a summary of the following in 200-250 words: \n" + text + "\nSummary: "            
+                    response = model.generate_content(prompt, stream=False)
+                    st.success(response.text) 
         except Exception as e:
             st.exception(f"Error: {e}")
